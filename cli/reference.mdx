@@ -1,0 +1,86 @@
+---
+title: CLI Reference
+description: All commands and flags for lz-config-validator
+---
+
+# CLI Reference
+
+Entry point: `lz-config-validator` (or `npx lz-config-validator`).
+
+## validate
+
+Validate OApp configuration across all deployment pathways.
+
+```bash
+lz-config-validator validate -d <chain>:<address> [-d ...] [options]
+```
+
+### Arguments
+
+| Flag | Description |
+|------|-------------|
+| `-d`, `--deployments` | Deployment(s): `chain:0xAddress`. Pass at least two for validation. |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--fix-mode=<mode>` | How to output fixes when there are errors: `report` (default), `calldata`, or `script`. |
+| `--oft` | Enable OFT-specific checks (shared decimals, native cap, pathway symmetry). |
+
+### Examples
+
+```bash
+lz-config-validator validate -d ethereum:0x1234... -d arbitrum:0x5678...
+lz-config-validator validate -d ethereum:0x... -d arbitrum:0x... --fix-mode=calldata
+lz-config-validator validate -d ethereum:0x... -d arbitrum:0x... --oft
+```
+
+Exit code: `0` if no errors; `1` if at least one validation error.
+
+---
+
+## snapshot
+
+Write current on-chain config to a JSON file.
+
+```bash
+lz-config-validator snapshot -d <chain>:<address> [-d ...] -o <path>
+```
+
+### Arguments
+
+| Flag | Description |
+|------|-------------|
+| `-d` | Deployment(s): `chain:0xAddress`. |
+| `-o` | Output file path (e.g. `config-snapshot.json`). |
+
+### Example
+
+```bash
+lz-config-validator snapshot -d ethereum:0x... -d arbitrum:0x... -o config-snapshot.json
+```
+
+---
+
+## drift
+
+Compare current on-chain config to a snapshot file.
+
+```bash
+lz-config-validator drift --snapshot=<path>
+```
+
+### Arguments
+
+| Option | Description |
+|--------|-------------|
+| `--snapshot=<path>` | Path to the snapshot JSON file (e.g. `config-snapshot.json`). |
+
+### Example
+
+```bash
+lz-config-validator drift --snapshot=config-snapshot.json
+```
+
+Exit code: `0` if no drift; `1` if config has changed from the snapshot.

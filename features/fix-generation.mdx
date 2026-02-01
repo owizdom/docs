@@ -1,0 +1,72 @@
+---
+title: Fix Generation
+description: Turn validation failures into suggested fixes (report, calldata, script)
+---
+
+# Fix Generation
+
+When validation fails, Config Validator can generate **fix descriptors**: concrete actions (e.g. call `setPeer(eid, peer)` on chain X) so you can correct the config instead of guessing.
+
+## CLI
+
+Use `--fix-mode` to control how fixes are presented:
+
+| Mode | Behavior |
+|------|----------|
+| `report` (default) | Print suggested calls (e.g. "Call setPeer(2, 0x...) on ethereum"). |
+| `calldata` | Print hex calldata for each fix (for use with cast/send). |
+| `script` | Output a note that a dry-run script can be generated; no execution by default. |
+
+Example:
+
+```bash
+npx lz-config-validator validate \
+  -d ethereum:0x... -d arbitrum:0x... \
+  --fix-mode=report
+```
+
+If there are errors, you'll see a "Suggested fixes" section with one line per fix.
+
+For calldata:
+
+```bash
+npx lz-config-validator validate \
+  -d ethereum:0x... -d arbitrum:0x... \
+  --fix-mode=calldata
+```
+
+## SDK
+
+```ts
+import { validateOApp, getFixes, encodeFixCalldata } from '@owizdom/config-validator';
+
+const report = await validateOApp({ deployments: [...] });
+const fixes = getFixes(report);
+
+for (const f of fixes) {
+  console.log(f.description);
+  console.log('  chain:', f.chain, 'target:', f.target, 'method:', f.method);
+  const calldata = encodeFixCalldata(f);
+  if (calldata) console.log('  calldata:', calldata);
+}
+```
+
+Each `Fix` has:
+
+- `chain` — Chain to run the fix on
+- `target` — Contract address (OApp or endpoint)
+- `method` — Function name (e.g. `setPeer`, `setConfig`)
+- `args` — Arguments for the call
+- `calldata` — Optional hex-encoded calldata
+- `description` — Human-readable description
+
+## Safety
+
+- Fix generation **does not execute** any transaction. It only suggests calls and optional calldata.
+- A script mode (if implemented) should be **dry-run by default**; execution should be opt-in.
+- Always verify the suggested target and args (e.g. correct EID and peer address) before sending.
+
+## See also
+
+- [CLI reference](/cli/reference) — All flags for `validate`
+- [SDK reference](/sdk/reference) — `getFixes`, `encodeFixCalldata`

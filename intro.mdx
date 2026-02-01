@@ -1,0 +1,41 @@
+---
+title: Introduction
+description: What is Config Validator and why it exists for LayerZero OApps
+---
+
+# Config Validator
+
+Config Validator is a CLI and SDK that validates [LayerZero](https://layerzero.network) OApp configuration across all deployment pathways. It automates the [integration checklist](https://docs.layerzero.network/v2/tools/integration-checklist) so you can catch misconfigurations before messages get **Blocked** or fail with **NotInitializable**, **DVN Mismatch**, or **Block Confirmations Mismatch**.
+
+## Why it exists
+
+LayerZero deployments require configuring **peers**, **DVNs**, **Executor**, and **block confirmations** in **both directions** for every pathway. The checklist has 20+ items that must be manually verified. A single mistake (e.g. DVN set on source but not destination, or missing peer on one chain) leads to blocked messages and hard-to-debug errors.
+
+Config Validator:
+
+- Reads on-chain config from your OApp on each chain
+- Compares source and destination for every pathway
+- Reports pass/fail for peers, DVNs, executor, and confirmations
+- Can generate **fix suggestions** (e.g. `setPeer`, `setConfig`) and optional calldata or a dry-run script
+
+## What you can do
+
+- **Validate** — Run `validate` with your deployments and get a report across all pathways.
+- **Fix** — Use `--fix-mode=report|calldata|script` to get suggested fixes or calldata.
+- **OFT checks** — Use `--oft` for shared decimals, native cap, and pathway symmetry.
+- **Snapshot & drift** — Save config to a JSON snapshot and run `drift` in CI to detect unexpected changes.
+
+<CardGroup cols={2}>
+  <Card title="Quick start" icon="rocket" href="/quickstart">
+    Install and run your first validate
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="/cli/reference">
+    All commands and flags
+  </Card>
+</CardGroup>
+
+## Links
+
+- [LayerZero V2 Docs](https://docs.layerzero.network/v2)
+- [Integration Checklist](https://docs.layerzero.network/v2/tools/integration-checklist)
+- [Debugging Messages](https://docs.layerzero.network/v2/concepts/troubleshooting/debugging-messages)

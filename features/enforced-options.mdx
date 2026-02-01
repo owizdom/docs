@@ -1,0 +1,29 @@
+---
+title: Enforced Options
+description: Validating MessageExecutionOptions and Composer-related config
+---
+
+# Enforced Options
+
+Config Validator can check that **MessageExecutionOptions** (and Composer-related config) are present and sane where required, so you avoid "Missing enforced options" and execution failures.
+
+## What are enforced options?
+
+LayerZero allows OApps to require certain **options** on messages (e.g. gas limits for `lzReceive` or `lzCompose`). If the pathway is configured to **enforce** options for the SEND message type, those options must be set; otherwise messages can be blocked or fail at execution.
+
+## What is checked
+
+- **Enforced options:** If the pathway requires enforced options for SEND, the validator ensures they are set (no "Missing enforced options").
+- **Gas / execution options:** Where derivable from config, gas limits or execution options for `lzReceive` / `lzCompose` are checked to be present and within safe bounds (e.g. min/max thresholds).
+
+Results are added to the same report as **warnings** or **errors**. Fix generation can suggest "set enforced options" or point to the LayerZero docs.
+
+## Using in the CLI
+
+Enforced-options checks run as part of `validate`. If your OApp uses enforced options or Composer, ensure you run validation after configuring them; the report will include any missing or invalid options.
+
+## See also
+
+- [Validation](/features/validation) — Base checks
+- [Fix generation](/features/fix-generation) — Suggested fixes for missing options
+- [LayerZero Message Execution Options](https://docs.layerzero.network/v2/tools/sdks/options)

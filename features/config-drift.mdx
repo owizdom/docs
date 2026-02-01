@@ -1,0 +1,69 @@
+---
+title: Config Drift
+description: Snapshot on-chain config and detect unexpected changes (CI)
+---
+
+# Config Drift
+
+Config drift lets you save the current on-chain config to a **snapshot** file and later compare live config to that snapshot. Use it to answer: "Did someone change DVN or peers on one chain?" and to fail CI when config changes unexpectedly.
+
+## Snapshot
+
+Write current config for your deployments to a JSON file:
+
+```bash
+npx lz-config-validator snapshot \
+  -d ethereum:0x... -d arbitrum:0x... \
+  -o config-snapshot.json
+```
+
+The file contains a version, timestamp, deployments, and per-chain config (peers, DVNs, executor, confirmations). Commit this file to your repo as the "expected" state.
+
+## Drift
+
+Compare current on-chain config to the snapshot:
+
+```bash
+npx lz-config-validator drift --snapshot=config-snapshot.json
+```
+
+- **No drift:** Exit 0, "No drift detected."
+- **Drift:** Exit 1, list of changes (chain, field, expected vs actual).
+
+## SDK
+
+```ts
+import { snapshotOApp, compareToSnapshot } from '@owizdom/config-validator';
+import fs from 'fs/promises';
+
+const deployments = [
+  { chain: 'ethereum', address: '0x...' },
+  { chain: 'arbitrum', address: '0x...' },
+];
+
+const snapshot = await snapshotOApp(deployments);
+await fs.writeFile('config-snapshot.json', JSON.stringify(snapshot, null, 2));
+
+// Later:
+const current = await snapshotOApp(deployments);
+const snapshotFromFile = JSON.parse(await fs.readFile('config-snapshot.json', 'utf-8'));
+const drift = compareToSnapshot(current, snapshotFromFile);
+
+if (drift.hasDrift) {
+  for (const c of drift.changes) {
+    console.log(`${c.severity} [${c.chain}] ${c.field}:`, c.expected, '->', c.actual);
+  }
+  process.exit(1);
+}
+```
+
+## CI example
+
+1. After a successful deploy, run `snapshot` and commit `config-snapshot.json`.
+2. In CI (e.g. on every PR or nightly), run `drift --snapshot=config-snapshot.json`.
+3. If drift is detected, fail the job and surface the diff so only intentional config changes are merged.
+
+## See also
+
+- [CLI reference](/cli/reference) — `snapshot`, `drift`
+- [SDK reference](/sdk/reference) — `snapshotOApp`, `compareToSnapshot`

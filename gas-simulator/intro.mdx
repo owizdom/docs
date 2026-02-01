@@ -1,0 +1,33 @@
+---
+title: Gas Simulator
+description: LayerZero gas/fee estimation for cross-chain sends
+---
+
+# Gas Simulator
+
+Gas Simulator is a separate tool from Config Validator. You can use it on its own or alongside Config Validator for LayerZero OApp development.
+
+Gas Simulator helps you estimate native gas/fees for LayerZero messages so you can pass the right `msg.value` and avoid **NotEnoughNative** or underfunded executions. Config Validator checks peer/DVN/executor config; Gas Simulator focuses on **fee estimation** for cross-chain sends.
+
+## Why it exists
+
+LayerZero messages require the sender to pay for execution on the destination chain. If you send too little native token with your message, the call fails with fee errors. Gas Simulator estimates the required fee for your pathway and payload so you can fund the call correctly.
+
+## What you can do
+
+- **Estimate fees** — Get the native amount needed for a send (source + destination execution).
+- **Use in scripts** — Integrate fee estimation into your deploy or send scripts.
+- **Combine with Config Validator** — Validate config with Config Validator, then estimate fees with Gas Simulator before sending.
+
+## Repo & package
+
+- **GitHub:** [owizdom/lz-kit](https://github.com/owizdom/lz-kit) (Gas Simulator lives in the lz-kit monorepo)
+
+<CardGroup cols={2}>
+  <Card title="Quick start" icon="rocket" href="/gas-simulator/quickstart">
+    Install and run your first estimate
+  </Card>
+  <Card title="Reference" icon="terminal" href="/gas-simulator/reference">
+    CLI and API
+  </Card>
+</CardGroup>

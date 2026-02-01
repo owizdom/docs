@@ -1,0 +1,51 @@
+---
+title: Validation
+description: What Config Validator checks (peers, DVNs, executor, confirmations)
+---
+
+# Validation
+
+Config Validator runs the following checks for every pathway (source chain → destination chain).
+
+## Peers
+
+- **What:** Peer addresses must be set on **both** sides of the pathway.
+- **Pass:** Source OApp has `getPeer(dstEid)` set to the destination OApp address, and destination OApp has `getPeer(srcEid)` set to the source OApp address; addresses match.
+- **Fail:** Missing peer on one side, or addresses don't match (wrong format or wrong contract).
+
+Common cause of **NotInitializable** or **Dst OApp Not Found** is incorrect or missing `setPeer()` on one chain.
+
+## DVNs (Decentralized Verifier Networks)
+
+- **What:** The set of DVN providers must be **identical** on source and destination for the pathway.
+- **Pass:** Same list of DVN addresses, in the same order, on both chains.
+- **Fail:** Different DVNs, different order, or missing on one side.
+
+**DVN Mismatch** in LayerZero Scan means send and receive config don't use the same DVN set.
+
+## Executor
+
+- **What:** Executor must be set on the **destination** side so messages can be executed.
+- **Pass:** Executor address is set and not zero.
+- **Fail:** Executor missing or zero.
+
+## Block confirmations
+
+- **What:** Outbound confirmations (source) must be **≥** inbound confirmations (destination).
+- **Pass:** `outboundConfirmations >= inboundConfirmations`.
+- **Fail:** Outbound &lt; inbound (leads to **Block Confirmations Mismatch**).
+
+## How the report is built
+
+For each pair of chains (A, B), the validator:
+
+1. Reads on-chain config (peers, DVN set, executor, confirmations) for both A and B.
+2. Runs the four checks above for the pathway A → B (and implicitly B → A for symmetry).
+3. Adds each result to the report with status `pass`, `fail`, or `warn`.
+
+The summary counts **errors** (fail) and **warnings** (warn). Exit code is non-zero if there is at least one error.
+
+## See also
+
+- [Fix generation](/features/fix-generation) — Turn failures into suggested fixes
+- [LayerZero Integration Checklist](https://docs.layerzero.network/v2/tools/integration-checklist)

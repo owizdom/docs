@@ -1,0 +1,53 @@
+---
+title: OFT Checks
+description: Extra validation for Omnichain Fungible Token (OFT) deployments
+---
+
+# OFT Checks
+
+When your OApp is an **OFT** (Omnichain Fungible Token), Config Validator can run additional checks so pathway config is consistent for token transfers.
+
+## Enabling OFT checks
+
+**CLI:** Add the `--oft` flag:
+
+```bash
+npx lz-config-validator validate \
+  -d ethereum:0x... -d arbitrum:0x... \
+  --oft
+```
+
+**SDK:** Pass `oft: true`:
+
+```ts
+const report = await validateOApp({
+  deployments: [...],
+  oft: true,
+});
+```
+
+## What is checked
+
+### Shared decimals
+
+- **What:** Shared decimals configuration must be consistent across the pathway (source and destination).
+- **Why:** Mismatched decimals lead to incorrect amounts or reverts on transfer.
+
+### Native cap / fee config
+
+- **What:** If the OFT exposes native drop cap or fee settings, they are validated to be set and within expected bounds where applicable.
+- **Why:** Prevents "NativeAmountExceedsCap" or misconfigured fees.
+
+### Pathway symmetry
+
+- **What:** Same peer/OApp addressing on both sides for the OFT (in addition to the standard peer check).
+- **Why:** Ensures the OFT contract on chain A is correctly set as peer on chain B and vice versa.
+
+## When to use
+
+Use `--oft` (or `oft: true`) when you are validating an OFT deployment (e.g. MintBurnOFT, NativeOFT, OFT Adapter). For a generic OApp that is not an OFT, you can omit it.
+
+## See also
+
+- [Validation](/features/validation) — Base checks (peers, DVNs, executor, confirmations)
+- [LayerZero OFT Standard](https://docs.layerzero.network/v2/concepts/applications/oft-standard)

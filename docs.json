@@ -1,122 +1,59 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "LZ Kit",
   "colors": {
-    "primary": "#16A34A",
+    "primary": "#0D9373",
     "light": "#07C983",
     "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
+  "redirects": [
+    { "source": "/", "destination": "/index" },
+    { "source": "/docs", "destination": "/index" },
+    { "source": "/docs/", "destination": "/index" }
+  ],
   "navigation": {
-    "tabs": [
+    "groups": [
       {
-        "tab": "Guides",
-        "groups": [
+        "group": "Intro",
+        "pages": ["index"]
+      },
+      {
+        "group": "Config Validator",
+        "pages": [
+          "intro",
+          "quickstart",
           {
-            "group": "Getting started",
+            "group": "Features",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "features/validation",
+              "features/fix-generation",
+              "features/oft-checks",
+              "features/enforced-options",
+              "features/config-drift"
             ]
           },
           {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
+            "group": "Reference",
+            "pages": ["cli/reference", "sdk/reference"]
           }
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
+        "group": "Gas Simulator",
+        "pages": ["gas-simulator/intro", "gas-simulator/quickstart", "gas-simulator/reference"]
+      },
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "group": "Troubleshooting",
+        "pages": ["troubleshooting"]
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    ]
   },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
+  "navbar": {},
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/owizdom/lz-kit"
     }
   }
 }

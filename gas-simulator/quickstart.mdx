@@ -1,0 +1,59 @@
+---
+title: Gas Simulator Quick Start
+description: Install and run Gas Simulator
+---
+
+# Gas Simulator Quick Start
+
+## Install
+
+If Gas Simulator is published as its own package, install it:
+
+```bash
+# When available as standalone package
+npm install @owizdom/gas-simulator
+# or use from lz-kit
+npm install @owizdom/lz-kit
+```
+
+Otherwise clone or use the [lz-kit](https://github.com/owizdom/lz-kit) repo and use the gas simulator from there.
+
+## Basic usage
+
+Estimate the native fee required for a LayerZero send (source chain + destination execution):
+
+```bash
+# Example: estimate fee for ethereum -> arbitrum
+npx lz-gas-simulator estimate \
+  --source ethereum \
+  --destination arbitrum \
+  --payload 0x...
+```
+
+Or use the SDK in your script:
+
+```ts
+import { estimateFee } from '@owizdom/lz-kit'; // or @owizdom/gas-simulator when available
+
+const fee = await estimateFee({
+  sourceChain: 'ethereum',
+  destinationChain: 'arbitrum',
+  payload: '0x...',
+});
+
+console.log('Required native (wei):', fee);
+```
+
+## Use with Config Validator
+
+1. **Validate** your OApp config with Config Validator (`lz-config-validator validate`).
+2. **Estimate** the fee for your send with Gas Simulator.
+3. Send your message with `msg.value >= estimatedFee`.
+
+Use Config Validator and Gas Simulator together for full OApp workflow.
+
+## Next steps
+
+- [Gas Simulator reference](/gas-simulator/reference) — CLI flags and API
+- [LayerZero fee docs](https://docs.layerzero.network/v2/developers/evm/technical-reference/tx-pricing) — How fees work
+- [lz-kit repo](https://github.com/owizdom/lz-kit) — Source code

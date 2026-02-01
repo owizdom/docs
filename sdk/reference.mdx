@@ -1,0 +1,119 @@
+---
+title: SDK Reference
+description: API for validateOApp, getFixes, snapshotOApp, compareToSnapshot
+---
+
+# SDK Reference
+
+Install:
+
+```bash
+npm install @owizdom/config-validator
+```
+
+Import:
+
+```ts
+import {
+  validateOApp,
+  printReport,
+  getFixes,
+  encodeFixCalldata,
+  snapshotOApp,
+  compareToSnapshot,
+} from '@owizdom/config-validator';
+import type { Deployment, ValidationReport, Fix, ConfigSnapshot, DriftReport } from '@owizdom/config-validator';
+```
+
+---
+
+## validateOApp(options)
+
+Validates OApp configuration across all deployment pathways.
+
+**Parameters:**
+
+- `options.deployments` — Array of `{ chain: string, address: \`0x${string}\` }`
+- `options.rpcUrls?` — Optional map of chain id to RPC URL
+- `options.oft?` — If `true`, enable OFT-specific checks
+
+**Returns:** `Promise<ValidationReport>`
+
+**Example:**
+
+```ts
+const report = await validateOApp({
+  deployments: [
+    { chain: 'ethereum', address: '0x1234...' },
+    { chain: 'arbitrum', address: '0x5678...' },
+  ],
+  oft: true,
+});
+```
+
+---
+
+## printReport(report)
+
+Prints a validation report to stdout (CLI-friendly format).
+
+**Parameters:** `report: ValidationReport`
+
+---
+
+## getFixes(report)
+
+Returns an array of fix descriptors for each failing check.
+
+**Parameters:** `report: ValidationReport`  
+**Returns:** `Fix[]`
+
+Each `Fix` has: `chain`, `target`, `method`, `args`, optional `calldata`, `description`.
+
+---
+
+## encodeFixCalldata(fix)
+
+Encodes a fix as hex calldata (when applicable).
+
+**Parameters:** `fix: Fix`  
+**Returns:** `\`0x${string}\` | undefined`
+
+---
+
+## snapshotOApp(deployments, rpcUrls?)
+
+Builds a snapshot of current on-chain config for the given deployments.
+
+**Parameters:**
+
+- `deployments: Deployment[]`
+- `rpcUrls?: Record<string, string>`
+
+**Returns:** `Promise<ConfigSnapshot>`
+
+---
+
+## compareToSnapshot(current, snapshot)
+
+Compares current snapshot to a previous snapshot and returns drift report.
+
+**Parameters:**
+
+- `current: ConfigSnapshot`
+- `snapshot: ConfigSnapshot`
+
+**Returns:** `DriftReport`
+
+`DriftReport` has: `snapshotPath`, `changes`, `hasDrift`. Each change has `chain`, `field`, `expected`, `actual`, `severity`.
+
+---
+
+## Types
+
+- **Deployment:** `{ chain: string, address: \`0x${string}\` }`
+- **ValidationReport:** `deployments`, `pathwayResults`, `results`, `errorCount`, `warningCount`
+- **CheckResult:** `pathway`, `check`, `status`, `message`, optional `details`
+- **Fix:** `chain`, `target`, `method`, `args`, optional `calldata`, `description`
+- **ConfigSnapshot:** `version`, `timestamp`, `deployments`, `configs`
+- **DriftReport:** `snapshotPath`, `changes`, `hasDrift`

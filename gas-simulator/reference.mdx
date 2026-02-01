@@ -1,0 +1,53 @@
+---
+title: Gas Simulator Reference
+description: CLI and API for Gas Simulator
+---
+
+# Gas Simulator Reference
+
+## CLI
+
+Entry point: `lz-gas-simulator` (or via lz-kit). Exact command names may vary by package; see the [lz-kit repo](https://github.com/owizdom/lz-kit) for up-to-date usage.
+
+### estimate
+
+Estimate the native fee required for a LayerZero message.
+
+```bash
+lz-gas-simulator estimate --source <chain> --destination <chain> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--source` | Source chain (e.g. ethereum, arbitrum). |
+| `--destination` | Destination chain. |
+| `--payload` | Optional payload / calldata for a more accurate estimate. |
+
+Output: estimated native amount (e.g. in wei) to pass as `msg.value`.
+
+---
+
+## SDK
+
+When using from lz-kit or a standalone package:
+
+```ts
+import { estimateFee } from '@owizdom/lz-kit'; // or @owizdom/gas-simulator
+
+const feeWei = await estimateFee({
+  sourceChain: 'ethereum',
+  destinationChain: 'arbitrum',
+  payload?: '0x...',
+});
+```
+
+**Returns:** Native amount (e.g. `bigint` in wei) required for the send.
+
+---
+
+## Related
+
+- **Config Validator** — [config-validator repo](https://github.com/owizdom/config-validator). Validates OApp config (peers, DVNs, executor, confirmations).
+- **Gas Simulator** — part of [lz-kit](https://github.com/owizdom/lz-kit). Estimates gas/fees for LayerZero messages.
+
+Both are independent tools; you can use one without the other.

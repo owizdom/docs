@@ -1,0 +1,87 @@
+---
+title: Troubleshooting
+description: Common errors and how to fix them with Config Validator
+---
+
+# Troubleshooting
+
+## DVN mismatch
+
+**Symptom:** LayerZero Scan shows **Blocked** or "DVN Mismatch"; validation report shows `dvns: fail` for a pathway.
+
+**Cause:** Source and destination do not use the same DVN set (or same order).
+
+**Fix:**
+
+1. Run `validate --fix-mode=report` to get suggested fixes.
+2. Ensure `setConfig` (or equivalent) is called with the **same** list of DVN addresses in the **same order** on both chains for that pathway.
+3. Re-run validation to confirm.
+
+Ref: [LayerZero DVN / Executor config](https://docs.layerzero.network/v2/developers/evm/configuration/dvn-executor-config)
+
+---
+
+## Peer missing or wrong
+
+**Symptom:** **NotInitializable** or "Dst OApp Not Found"; validation report shows `peers: fail`.
+
+**Cause:** `setPeer()` was not called on one or both sides, or the peer address/EID is wrong.
+
+**Fix:**
+
+1. Run `validate --fix-mode=report` to see which chain is missing the peer.
+2. Call `setPeer(remoteEid, remoteOAppAddress)` on **both** OApps (source and destination). Use the correct endpoint ID (EID) for the remote chain.
+3. Re-run validation.
+
+Ref: [Integration checklist — Set peers](https://docs.layerzero.network/v2/tools/integration-checklist#set-peers-on-every-pathway)
+
+---
+
+## Executor missing
+
+**Symptom:** Messages never execute on destination; validation report shows `executor: fail` for destination chain.
+
+**Cause:** Executor is not set on the destination OApp/config.
+
+**Fix:**
+
+1. Set the Executor address on the destination side (via `setConfig` or the appropriate setter).
+2. Re-run validation.
+
+Ref: [LayerZero Executor](https://docs.layerzero.network/v2/concepts/glossary#executor)
+
+---
+
+## Block confirmations mismatch
+
+**Symptom:** "Block Confirmations Mismatch"; validation report shows `confirmations: fail`.
+
+**Cause:** Outbound confirmations (source) are **less than** inbound confirmations (destination).
+
+**Fix:**
+
+1. Ensure outbound confirmations ≥ inbound confirmations for the pathway.
+2. Update config on source and/or destination so the condition holds.
+3. Re-run validation.
+
+Ref: [Block Confirmation Mismatch](https://docs.layerzero.network/v2/developers/evm/configuration/dvn-executor-config#block-confirmation-mismatch)
+
+---
+
+## NotEnoughNative / gas
+
+**Symptom:** Send fails with "NotEnoughNative" or similar gas/fee error.
+
+**Cause:** This is a **fee/gas** issue, not a peer/DVN/executor config issue. Config Validator does not estimate gas or fees.
+
+**Fix:** Use a gas estimation tool or LayerZero `quote()` to get required native fee and pass enough `msg.value`. For a dedicated fee estimator, see the [Gas Simulator](/gas-simulator/intro).
+
+---
+
+## RPC or timeout errors
+
+**Symptom:** Validation fails with network/timeout errors when reading chain config.
+
+**Cause:** Missing or slow RPC URLs for some chains.
+
+**Fix:** Pass `rpcUrls` in the SDK (e.g. `validateOApp({ deployments, rpcUrls: { ethereum: 'https://...', arbitrum: 'https://...' } })`). CLI may support `--rpc` or env vars depending on implementation; see [CLI reference](/cli/reference).

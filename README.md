@@ -1,43 +1,38 @@
-# Mintlify Starter Kit
+# Config Validator Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Documentation for [Config Validator](https://github.com/owizdom/config-validator), built with [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Run locally
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+1. **From the repo root** (where `docs.json` is):
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+   ```bash
+   cd config-validator-docs
+   npx mint dev
+   ```
 
-## Development
+   Or with the Mint CLI installed globally:
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+   ```bash
+   mint dev
+   ```
 
-```
-npm i -g mint
-```
+2. Open **http://localhost:3000** in your browser.
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+3. If you see 404s, try **http://localhost:3000/intro** or **http://localhost:3000/index**. Ensure you're on the latest Mint CLI: `npm i -g mint` then `mint update`.
 
-```
-mint dev
-```
+## Deploy to Mintlify
 
-View your local preview at `http://localhost:3000`.
+1. Create a project at [dashboard.mintlify.com](https://dashboard.mintlify.com).
+2. Connect this repository.
+3. Mintlify builds from the default branch; pushes update the site.
 
-## Publishing changes
+## Structure
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+- **docs.json** — Mintlify config (theme, navigation, navbar, footer). Structure matches the [Mintlify starter](https://github.com/mintlify/starter).
+- **Root** — All `.mdx` pages live next to `docs.json`: `index.mdx`, `intro.mdx`, `quickstart.mdx`, `troubleshooting.mdx`, plus `features/`, `cli/`, `sdk/` subfolders. Navigation paths in `docs.json` are relative to the repo root (e.g. `intro`, `features/validation`).
+- **public/** — Static assets (e.g. `favicon.svg`).
 
-## Need help?
+## If it still doesn’t work
 
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+- **Schema errors:** Your Mintlify CLI may expect a different schema. Run `mint update` or check [Mintlify docs](https://mintlify.com/docs).
