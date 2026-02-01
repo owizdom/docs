@@ -9,9 +9,8 @@
   },
   "favicon": "/favicon.svg",
   "redirects": [
-    { "source": "/", "destination": "/index" },
-    { "source": "/docs", "destination": "/index" },
-    { "source": "/docs/", "destination": "/index" }
+    { "source": "/docs", "destination": "/" },
+    { "source": "/docs/", "destination": "/" }
   ],
   "navigation": {
     "groups": [
